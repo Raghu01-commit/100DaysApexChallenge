@@ -27,7 +27,7 @@ public with sharing class ContactTriggerHandler extends TriggerHandler {
     }
 
     public override void afterUpdate() {
-        ContactHelper.sumOfContactsAmount(newContacts, oldContMap );
+        ContactHelper.sumOfContactsAmount(newContacts, oldContMap);
     }
 
     public override void beforeDelete() {

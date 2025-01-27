@@ -150,6 +150,7 @@ public virtual class TriggerHandler {
     }
   }
 
+  
   // make sure this trigger should continue to run
   @TestVisible
   private Boolean validateRun() {
