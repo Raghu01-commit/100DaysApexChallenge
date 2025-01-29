@@ -31,7 +31,7 @@ public with sharing class ContactTriggerHandler extends TriggerHandler {
     }
 
     public override void beforeDelete() {
-        
+        ContactHelper.preventContactDeletion(oldContacts);
     }
 
     public override void afterDelete() {

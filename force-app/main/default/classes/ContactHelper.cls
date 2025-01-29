@@ -73,4 +73,36 @@ public with sharing class ContactHelper {
             update listOfAccountsToBeUpdated;
         }
     }
+
+
+
+    public static void preventContactDeletion(List<Contact> contactsList){
+
+        //Collect the Contact Ids
+        Set<Id> contactIds = new Set<Id>();
+
+        for(Contact con : contactsList){
+            contactIds.add(con.Id);
+        }
+
+        Map<Id, OpportunityContactRole> contactRoleMap = new Map<Id, OpportunityContactRole>();
+
+        //Query those OppContactRoles where the ContactId is present, it is marked as Primary and also at the same time the Opp is Open.
+        List<OpportunityContactRole> contactRoles = [SELECT ContactId FROM OpportunityContactRole WHERE ContactId IN : contactIds AND      IsPrimary = TRUE AND Opportunity.StageName NOT IN ('Closed Won', 'Closed Lost')];
+
+        if(!contactRoles.isEmpty()){
+            //Query the Opp Contact Roles to find that the Contact is not a Primary Contact on an Open Opp
+            for(OpportunityContactRole ocr : contactRoles){
+                contactRoleMap.put(ocr.contactId, ocr);
+                }
+        }
+
+        //Prevent the deletion of the Contacts
+        for(Contact con : contactsList){
+            if(contactRoleMap.containsKey(con.Id)){
+                con.addError('This Contact is marked as Primary Contact against an Open Opportunity. You cannot delete this boss');
+            }
+        }
+
+    }
 }
