@@ -97,6 +97,7 @@ public with sharing class ContactHelper {
                 }
         }
 
+        
         //Prevent the deletion of the Contacts
         for(Contact con : contactsList){
             if(contactRoleMap.containsKey(con.Id)){
