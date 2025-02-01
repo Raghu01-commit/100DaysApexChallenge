@@ -23,7 +23,7 @@ public with sharing class ContactTriggerHandler extends TriggerHandler {
     }
 
     public override void beforeUpdate() {
-    
+        
     }
 
     public override void afterUpdate() {

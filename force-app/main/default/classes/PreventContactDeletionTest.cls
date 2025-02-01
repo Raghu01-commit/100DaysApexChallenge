@@ -43,7 +43,7 @@ public class PreventContactDeletionTest {
             // Primary Contact on a Closed Opportunity (should allow deletion)
             new OpportunityContactRole(OpportunityId = closedOpp.Id, ContactId = contact2.Id, IsPrimary = true)
         };
-        
+
         insert contactRoles;
 
         System.debug('### Test Setup Complete: Contact 1 (Primary on Open Opp) ID = ' + contact1.Id);
