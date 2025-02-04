@@ -43,6 +43,7 @@ public with sharing class ContactHelper {
             return;
         }
 
+        //This is a comment Test 
         //Map that stores the accountid and its sum of Amount for the related Contacts
         Map<Id, Decimal> accountToSumOfContactAmount = new Map<Id, Decimal>();
 
