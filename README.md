@@ -24,14 +24,6 @@ This repository hosts Apex challenges that I'm doing as part of the 100DaysOfApe
 | ------------- | ------------- | ------------- |
 | 1 | Calculate the sum of Amount values from related Contacts and update the Sum of Amount field on the corresponding Account. | Contact.Amount__c ;Account.Sum_Of_Amount__c |
 | 2 | Prevent the deletion of a contact if it is a Primary Contact on an Open Opportunity.|
-| 3 | When a new opportunity is closed as "Won", calculate and add loyalty points to the associated account.
-Loyalty points are calculated as 1 point per $10 spent.
-
-Update the account's loyalty tier based on total points:
-Bronze: 0-29999 points
-Silver: 30000-59999 points
-Gold: 60000+ points
-
-Send an email notification to the customer when their tier changes. | Account.Loyalty_Points__c; Account.Loyalty_Tier__c
+| 3 | When a new opportunity is closed as "Won", calculate and add loyalty points to the associated account. Loyalty points are calculated as 1 point per $10 spent. Update the account's loyalty tier based on total points: Bronze: 0-29999 points; Silver: 30000-59999 points; Gold: 60000+ points. Send an email notification to the customer when their tier changes. | Account.Loyalty_Points__c; Account.Loyalty_Tier__c
 | End  | End | End |
 >>>>>>> c9ea0c0c21923485d6bbe31457b9d79d473df5d2
