@@ -50,8 +50,6 @@ private class ContactHelperTest {
         System.assertEquals(0, updatedAcc.Sum_of_Amount__c, 'Sum_of_Amount__c should update correctly after delete.');
     }
 
-
-    
     @isTest
     static void testAfterUndelete() {
         Account acc = new Account(Name = 'Test Account');

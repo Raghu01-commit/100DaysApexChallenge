@@ -17,6 +17,7 @@ public with sharing class ContactHelper {
                 }
         }
 
+        
         // Explicitly add AccountIds for delete scenario
         if (Trigger.isDelete) {  
             for (Contact con : contactsList) {
