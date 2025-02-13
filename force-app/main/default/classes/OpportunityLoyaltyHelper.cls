@@ -13,8 +13,6 @@ public with sharing class OpportunityLoyaltyHelper {
             }
     }
 
-    system.debug('Account Id::::: '+accountIds);
-
     //Check if the Set of Accounts are null and 
     if(!accountIds.isEmpty()){
         updateLoyaltyPoints(accountIds);
@@ -27,11 +25,9 @@ private static void updateLoyaltyPoints(Set<Id> accIds){
 
     for(AggregateResult agg : [SELECT AccountId, SUM(Amount) sumAmount FROM 
                                 Opportunity WHERE StageName = 'Closed Won' AND AccountId IN :accIds GROUP BY AccountId]){
-                                    system.debug('Aggregate Result:::: '+agg);
                                     Account acc = new Account();
                                     acc.Id = (Id) agg.get('AccountId');
                                     acc.Loyalty_Points__c = (Integer)(((Decimal) agg.get('sumAmount'))/10);
-                                    system.debug('Loyalty Points and Amount:::: '+acc);
                                     accountsToBeUpdated.add(acc);
     }
 

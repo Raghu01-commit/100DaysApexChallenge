@@ -2,7 +2,13 @@ public with sharing class AccountEmailHelper {
 
     public static void sendNewTierAccountEmails(List<Account> newAccounts, Map<Id, Account> oldAccountsMap){
 
-        List<String> targetEmails = new List<String> {'y.raghavendra008@gmail.com', 'sravanti.ch28@gmail.com'};
+        //Since we don't want to trigger emails to users when the test methods are executing we can prevent that by using the below method
+        if(Test.isRunningTest()){
+            return;
+        }
+        //I hardcoded the email values here but in general we get the emails to be dynamically sent based on the values in the records
+        
+        List<String> targetEmails = new List<String> {'test@gmail.com'};
 
         //Method to hold single email messages
         List<Messaging.SingleEmailMessage> emailsToSend = new List<Messaging.SingleEmailMessage>();
