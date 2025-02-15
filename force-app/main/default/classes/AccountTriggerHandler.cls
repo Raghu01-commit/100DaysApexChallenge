@@ -16,13 +16,13 @@ public with sharing class AccountTriggerHandler extends TriggerHandler {
         
     } */
 
-    /* public override void afterinsert() {
-        
-    } */
+    public override void afterinsert() {
+        AccountHelper.createContacts(newAccounts); //Challenge 5(ii)
+    }
 
-    /* public override void beforeUpdate() {
-        
-    } */
+    public override void beforeUpdate() {
+        AccountHelper.updateAccountDescription(newAccounts); //Challenge 5(i)
+    }
 
     public override void afterUpdate() {
         AccountEmailHelper.sendNewTierAccountEmails(newAccounts, oldAccountMap);
