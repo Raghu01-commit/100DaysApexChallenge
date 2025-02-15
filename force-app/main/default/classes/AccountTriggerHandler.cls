@@ -25,7 +25,7 @@ public with sharing class AccountTriggerHandler extends TriggerHandler {
     }
 
     public override void afterUpdate() {
-        AccountEmailHelper.sendNewTierAccountEmails(newAccounts, oldAccountMap);
+        AccountHelper.sendNewTierAccountEmails(newAccounts, oldAccountMap);
     }
 
     /* public override void beforeDelete() {
