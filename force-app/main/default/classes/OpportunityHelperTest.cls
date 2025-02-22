@@ -1,5 +1,5 @@
 @isTest
-public class OpportunityLoyaltyHelperTest {
+public class OpportunityHelperTest {
 
     @isTest
     static void testOpportunityLoyaltyPoints() {

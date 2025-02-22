@@ -1,30 +1,16 @@
 public with sharing class ContactHelper {
-    public ContactHelper() {
-
-    }
-
     public static void sumOfContactsAmount(List<Contact> contactsList, Map<Id, Contact> oldContactMap){
 
         //Account Ids to aggregate the Amount of the Contact
         Set<Id> accountIds = new Set<Id>();
 
         //Add accountIds for Insert and Undelete scenarios
-        if((Trigger.isInsert || Trigger.isUndelete) && contactsList != null ){
+        if((Trigger.isInsert || Trigger.isUndelete || Trigger.isDelete) && contactsList != null ){
                 for(Contact con : contactsList){
-                    if(con.AccountId != null){
+                    if(con.AccountId != null ){
                         accountIds.add(con.AccountId);
                     }
                 }
-        }
-
-        
-        // Explicitly add AccountIds for delete scenario
-        if (Trigger.isDelete) {  
-            for (Contact con : contactsList) {
-                if (con.AccountId != null) {
-                    accountIds.add(con.AccountId);
-                }
-            }
         }
 
         //add accountids for the update scenario
@@ -107,4 +93,84 @@ public with sharing class ContactHelper {
         }
 
     }
+
+    public static void countOfActiveContacts(List<Contact> contactList, Map<Id, Contact> oldContactMap){
+
+        system.debug('List of Contacts::::::: '+contactList);
+        system.debug('Map of Contacts::::::'+oldContactMap);
+        system.debug('Trigger Event ::::::: '+Trigger.operationType);
+
+
+        Set<Id> accIds = new Set<Id>();
+        Map<Id, Integer> accIdToCountMap = new Map<Id, Integer>();
+
+        if(Trigger.isInsert || Trigger.isUndelete || Trigger.isDelete){
+            for(Contact con : contactList){
+                if(con.AccountId != null && con.Active__c){
+                    accIds.add(con.AccountId);
+                }
+            }
+        }
+
+        if(Trigger.isUpdate){
+            for(Contact con : contactList){
+                if(con.AccountId != null &&
+                ((oldContactMap.get(con.Id).Active__c != con.Active__c) || (con.AccountId != oldContactMap.get(con.Id).AccountId))){
+                    accIds.add(con.AccountId);
+                    accIds.add(oldContactMap.get(con.Id).AccountId);
+                }
+            }
+        }
+
+        if(!accIds.isEmpty()){
+            for(AggregateResult agg : [SELECT AccountId, COUNT(Id) cnt 
+                                        FROM Contact 
+                                        WHERE AccountId IN : accIds 
+                                        AND Active__c = true 
+                                        GROUP BY AccountId]){
+                accIdToCountMap.put((Id)agg.get('AccountId'),(Integer)agg.get('cnt'));
+            }
+        }
+
+        List<Account> accountsToBeUpdated = new List<Account>();
+
+        if(!accIdToCountMap.isEmpty()){
+            for(Id accId : accIds){
+                Account acc = new Account();
+                acc.Id = accId;
+                acc.Active_Contacts_Count__c = accIdToCountMap.get(accId) != null ? accIdToCountMap.get(accId) : 0;
+                accountsToBeUpdated.add(acc);
+            }
+        }
+        
+        if(!accountsToBeUpdated.isEmpty()){
+            update accountsToBeUpdated;
+        }
+    }
+
+    //whenever there is a change in the Account of the Contact
+    public static void updateContactAddress(List<Contact> newContacts, Map<Id, Contact> oldContactMap) {
+        Set<Id> accountIds = new Set<Id>();
+        for (Contact con : newContacts) {
+            if (con.AccountId != null && (oldContactMap.get(con.Id) == null || con.AccountId != oldContactMap.get(con.Id).AccountId)) {
+                accountIds.add(con.AccountId);
+            }
+        }
+    
+        Map<Id, Account> accountMap = new Map<Id, Account>([SELECT Id, BillingStreet, BillingCity, BillingState, BillingCountry, BillingPostalCode FROM Account WHERE Id IN :accountIds]);
+        //List<Contact> contactsToBeUpdated = new List<Contact>();
+    
+        for (Contact con : newContacts) {
+            if (con.AccountId != null && accountMap.containsKey(con.AccountId)) {
+                Account acc = accountMap.get(con.AccountId);
+
+                con.MailingStreet = acc.BillingStreet;
+                con.MailingCity = acc.BillingCity;
+                con.MailingState = acc.BillingState;
+                con.MailingCountry = acc.BillingCountry;
+                con.MailingPostalCode = acc.BillingPostalCode;
+            }
+        }
+    }
+    
 }

@@ -1,4 +1,4 @@
-public with sharing class OpportunityLoyaltyHelper {
+public with sharing class OpportunityHelper {
     
     public static void calculateLoyaltyPoints(List<Opportunity> newOpps, Map<Id, Opportunity> oldOppsMap){
 

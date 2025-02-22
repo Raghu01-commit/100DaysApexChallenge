@@ -25,7 +25,7 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
     } */
 
     public override void afterUpdate() {
-        OpportunityLoyaltyHelper.calculateLoyaltyPoints(newOpportunities, oldOpportunitiesMap);
+        OpportunityHelper.calculateLoyaltyPoints(newOpportunities, oldOpportunitiesMap);//Challenge 3
     }
 
     /* public override void beforeDelete() {

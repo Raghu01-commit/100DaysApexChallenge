@@ -11,7 +11,6 @@ public with sharing class ContactTriggerHandler extends TriggerHandler {
         this.oldContacts = (List<Contact>) Trigger.old;
         this.newContMap = (Map<Id, Contact>) Trigger.newMap;
         this.oldContMap = (Map<Id, Contact>) Trigger.oldMap;
-
     }
 
     public override void beforeInsert() {
@@ -19,26 +18,31 @@ public with sharing class ContactTriggerHandler extends TriggerHandler {
     }
 
     public override void afterinsert() {
-        ContactHelper.sumOfContactsAmount(newContacts, null);
+        ContactHelper.sumOfContactsAmount(newContacts, oldContMap);//Challenge 1
+        ContactHelper.countOfActiveContacts(newContacts, oldContMap);//Challenge 6
     }
 
     public override void beforeUpdate() {
-        
+        ContactHelper.updateContactAddress(newContacts, oldContMap);//Challenge 8
     }
 
     public override void afterUpdate() {
-        ContactHelper.sumOfContactsAmount(newContacts, oldContMap);
+        ContactHelper.sumOfContactsAmount(newContacts, oldContMap);//Challenge 1
+        ContactHelper.countOfActiveContacts(newContacts, oldContMap);//Challenge 6
+        
     }
 
     public override void beforeDelete() {
-        ContactHelper.preventContactDeletion(oldContacts);
+        ContactHelper.preventContactDeletion(oldContacts);//Challenge 2
     }
 
     public override void afterDelete() {
-        ContactHelper.sumOfContactsAmount(oldContacts, null);
+        ContactHelper.sumOfContactsAmount(oldContacts, oldContMap);//Challenge 1
+        ContactHelper.countOfActiveContacts(oldContacts, oldContMap);//Challenge 6
     }
 
     public override void afterUndelete() {
-        ContactHelper.sumOfContactsAmount(newContacts, null);
+        ContactHelper.sumOfContactsAmount(newContacts, oldContMap);//Challenge 1
+        ContactHelper.countOfActiveContacts(newContacts, oldContMap);//Challenge 6
     }
 }

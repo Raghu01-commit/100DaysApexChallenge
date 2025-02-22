@@ -52,4 +52,36 @@ public with sharing class AccountHelper {
         }
         insert contactsToBeCreated;
     }
+
+    //whenver there is a change in the Account Billing Address
+    public static void updateContactAddress(Map<Id, Account> newAccountsMap, Map<Id, Account> oldAccountsMap){
+        Set<Id> accountIds = new Set<Id>();
+        
+        for(Account acc : newAccountsMap.values()){
+            if((acc.BillingStreet != oldAccountsMap.get(acc.Id).BillingStreet) ||  
+                (acc.BillingCity != oldAccountsMap.get(acc.Id).BillingCity) ||
+                (acc.BillingState != oldAccountsMap.get(acc.Id).BillingState) || 
+                (acc.BillingPostalCode != oldAccountsMap.get(acc.Id).BillingPostalCode) || 
+                (acc.BillingCountry != oldAccountsMap.get(acc.Id).BillingCountry)){
+                    accountIds.add(acc.Id);
+            }
+        }
+
+        List<Contact> contactsToBeUpdated = new List<Contact>();
+
+        for(Contact con : [SELECT Id, AccountId FROM Contact WHERE AccountId IN :accountIds ]){
+            Account acc = newAccountsMap.get(con.AccountId);
+            con.MailingStreet =  acc.BillingStreet;
+            con.MailingCity = acc.BillingCity;
+            con.MailingState = acc.BillingState;
+            con.MailingCountry = acc.BillingCountry;
+            con.MailingPostalCode = acc.BillingPostalCode;
+
+            contactsToBeUpdated.add(con);
+        }
+
+        if(!contactsToBeUpdated.isEmpty()){
+            update contactsToBeUpdated;
+        }
+    }
 }

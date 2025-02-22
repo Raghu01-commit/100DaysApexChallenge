@@ -1,7 +1,4 @@
-public with sharing class OppLineItemDiscountHelper {
-    public OppLineItemDiscountHelper() {
-
-    }
+public with sharing class OppLineItemHelper {
 
     public static void updateOriginalAmount(List<OpportunityLineItem> oppLineItems){
 
@@ -64,7 +61,7 @@ public with sharing class OppLineItemDiscountHelper {
         // List to hold records for explicit update
         List<OpportunityLineItem> oliToUpdate = new List<OpportunityLineItem>();
 
-        for(OpportunityLineItem oli : oppLineItems){
+        for(OpportunityLineItem oli : [SELECT Id, OpportunityId, Discount FROM OpportunityLineItem WHERE OpportunityId IN : oppIds]){
             if(oppMap.containsKey(oli.OpportunityId)){
                 Opportunity opp = oppMap.get(oli.OpportunityId);
                 Decimal discount = 0;
@@ -92,6 +89,47 @@ public with sharing class OppLineItemDiscountHelper {
             }
 
             isAlreadyUpdated = false;  // Reset flag after update to allow for next update
+    }
+
+
+    public static void updateOppProdOnAccount(List<OpportunityLineItem> newOppLineItems){
+
+        Set<Id> oppIds = new Set<Id>();
+        //Collecting all the Parent Opportunities for the Opportunity Line Items
+        for(OpportunityLineItem oppProd : newOppLineItems){
+            if(oppProd.OpportunityId != null){
+                oppIds.add(oppProd.OpportunityId);
+            }
+        }
+
+        Set<Id> accIds = new Set<Id>();
+        //Collecting all the Parent AccountIds for the Opps collected above.
+        if(!oppIds.isEmpty()){
+            for(Opportunity opp : [SELECT Id, AccountId FROM Opportunity WHERE Id IN:oppIds]){
+                accIds.add(opp.AccountId);
+            }
+        }
+
+        Map<Id, Integer> oppToTotalOppProducts = new Map<Id, Integer>();
+
+        for(Opportunity opp : [SELECT Id, AccountId, (SELECT Id FROM OpportunityLineItems) FROM Opportunity WHERE AccountId IN :accIds]){
+                oppToTotalOppProducts.put(opp.Id, opp.OpportunityLineItems.size() != null ? opp.OpportunityLineItems.size() : 0);
+        }
+
+        List<Account> accountsToBeUpdated = new List<Account>();
+
+        for(Account acc : [SELECT Id, Total_Opportunity_Products__c, (SELECT Id FROM Opportunities) FROM Account WHERE Id IN : accIds]){
+            Integer count = 0;
+            for(Opportunity opp : acc.Opportunities){
+                count += oppToTotalOppProducts.get(opp.Id);
+            }
+            acc.Total_Opportunity_Products__c = count;
+            accountsToBeUpdated.add(acc);
+        }
+
+        if(!accountsToBeUpdated.isEmpty()){
+            update accountsToBeUpdated;
+        }
     }
 
 }

@@ -15,8 +15,9 @@ public with sharing class OppLineItemTriggerHandler extends TriggerHandler {
     } */
 
     public override void afterinsert() {
-        OppLineItemDiscountHelper.updateOriginalAmount(newOppLineItems);
-        OppLineItemDiscountHelper.calculateDiscount(newOppLineItems);
+        OppLineItemHelper.updateOriginalAmount(newOppLineItems);//Challenge 4
+        OppLineItemHelper.calculateDiscount(newOppLineItems);//Challenge 4
+        OppLineItemHelper.updateOppProdOnAccount(newOppLineItems);//Challenge 7
     }
 
     /* public override void beforeUpdate() {
@@ -24,8 +25,8 @@ public with sharing class OppLineItemTriggerHandler extends TriggerHandler {
     } */
 
     public override void afterUpdate() {
-        OppLineItemDiscountHelper.updateOriginalAmount(newOppLineItems);
-        OppLineItemDiscountHelper.calculateDiscount(newOppLineItems);
+        OppLineItemHelper.updateOriginalAmount(newOppLineItems);//Challenge 4
+        OppLineItemHelper.calculateDiscount(newOppLineItems);//Challenge 4
     }
 
     /* public override void beforeDelete() {
@@ -33,13 +34,14 @@ public with sharing class OppLineItemTriggerHandler extends TriggerHandler {
     } */
 
     public override void afterDelete() {
-        OppLineItemDiscountHelper.updateOriginalAmount(oldOppLineItems);
-        OppLineItemDiscountHelper.calculateDiscount(oldOppLineItems);
+        OppLineItemHelper.updateOriginalAmount(oldOppLineItems);//Challenge 4
+        OppLineItemHelper.calculateDiscount(oldOppLineItems);//Challenge 4
+        OppLineItemHelper.updateOppProdOnAccount(oldOppLineItems);//Challenge 7
     }
 
     public override void afterUndelete() {
-        OppLineItemDiscountHelper.updateOriginalAmount(newOppLineItems);
-        OppLineItemDiscountHelper.calculateDiscount(newOppLineItems);
+        OppLineItemHelper.updateOriginalAmount(newOppLineItems);//Challenge 4
+        OppLineItemHelper.calculateDiscount(newOppLineItems);//Challenge 4
     }
 
 

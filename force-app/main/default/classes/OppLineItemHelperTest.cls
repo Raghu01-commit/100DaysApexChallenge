@@ -1,5 +1,5 @@
 @isTest
-public class OppLineItemDiscountHelperTest {
+public class OppLineItemHelperTest {
     
     @TestSetup
     static void makeData(){
