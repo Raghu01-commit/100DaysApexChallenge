@@ -16,9 +16,9 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
         
     } */
 
-    /* public override void afterinsert() {
-        
-    } */
+    public override void afterinsert() {
+        OpportunityHelper.updateOppDetailsOnAccount(newOpportunities, oldOpportunitiesMap); //Challenge 13
+    }
 
     /* public override void beforeUpdate() {
         
@@ -26,17 +26,18 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
 
     public override void afterUpdate() {
         OpportunityHelper.calculateLoyaltyPoints(newOpportunities, oldOpportunitiesMap);//Challenge 3
+        OpportunityHelper.updateOppDetailsOnAccount(newOpportunities, oldOpportunitiesMap); //Challenge 13
     }
 
     /* public override void beforeDelete() {
         
     } */
+    
+    public override void afterDelete() {
+        OpportunityHelper.updateOppDetailsOnAccount(newOpportunities, oldOpportunitiesMap); //Challenge 13
+    }
 
-    /* public override void afterDelete() {
-        
-    } */
-
-    /* public override void afterUndelete() {
-        
-    } */
+    public override void afterUndelete() {
+        OpportunityHelper.updateOppDetailsOnAccount(newOpportunities, oldOpportunitiesMap); //Challenge 13
+    }
 }

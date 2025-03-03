@@ -76,7 +76,7 @@ public with sharing class ContactHelper {
         Map<Id, OpportunityContactRole> contactRoleMap = new Map<Id, OpportunityContactRole>();
 
         //Query those OppContactRoles where the ContactId is present, it is marked as Primary and also at the same time the Opp is Open.
-        List<OpportunityContactRole> contactRoles = [SELECT ContactId FROM OpportunityContactRole WHERE ContactId IN : contactIds AND      IsPrimary = TRUE AND Opportunity.StageName NOT IN ('Closed Won', 'Closed Lost')];
+        List<OpportunityContactRole> contactRoles = [SELECT ContactId FROM OpportunityContactRole WHERE ContactId IN : contactIds AND     IsPrimary = TRUE AND Opportunity.StageName NOT IN ('Closed Won', 'Closed Lost')];
 
         if(!contactRoles.isEmpty()){
             //Query the Opp Contact Roles to find that the Contact is not a Primary Contact on an Open Opp
@@ -95,11 +95,6 @@ public with sharing class ContactHelper {
     }
 
     public static void countOfActiveContacts(List<Contact> contactList, Map<Id, Contact> oldContactMap){
-
-        system.debug('List of Contacts::::::: '+contactList);
-        system.debug('Map of Contacts::::::'+oldContactMap);
-        system.debug('Trigger Event ::::::: '+Trigger.operationType);
-
 
         Set<Id> accIds = new Set<Id>();
         Map<Id, Integer> accIdToCountMap = new Map<Id, Integer>();

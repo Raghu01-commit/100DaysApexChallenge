@@ -7,7 +7,6 @@ public with sharing class AccountHelper {
             return;
         }
         //I hardcoded the email values here but in general we get the emails to be dynamically sent based on the values in the records
-        
         List<String> targetEmails = new List<String> {'test@gmail.com'};
 
         //Method to hold single email messages
@@ -53,7 +52,7 @@ public with sharing class AccountHelper {
         insert contactsToBeCreated;
     }
 
-    //whenver there is a change in the Account Billing Address
+    //whenver there is a change in the Account Billing
     public static void updateContactAddress(Map<Id, Account> newAccountsMap, Map<Id, Account> oldAccountsMap){
         Set<Id> accountIds = new Set<Id>();
         
