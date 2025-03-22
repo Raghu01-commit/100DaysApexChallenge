@@ -14,25 +14,23 @@ public with sharing class EmployeeHelper {
             }
         }
 
-        Map<Id, Decimal> employerToMaxSalaryMap = new Map<Id, Decimal>(); 
-        Map<Id, Decimal> employerToMinSalaryMap = new Map<Id, Decimal>();
+        Map<Id, List<Decimal>> employerToSalaryMap = new Map<Id, List<Decimal>>();
 
         List<Employer__c> employersToBeUpdated = new List<Employer__c>();
         //Aggregate result to get the Min, Max Salary for each employer
+
         if(!employerIds.isEmpty()){
             for(AggregateResult empAgg : [SELECT Employer__c employerId, MIN(Salary__c) minSal, MAX(Salary__c) maxSal
                                         FROM Employee__c 
                                         WHERE Employer__c IN :employerIds
                                         GROUP BY Employer__c]){
-                employerToMaxSalaryMap.put((Id)empAgg.get('employerId'), (Decimal)empAgg.get('maxSal'));
-                employerToMinSalaryMap.put((Id)empAgg.get('employerId'), (Decimal)empAgg.get('minSal'));                           
+                employerToSalaryMap.put((Id)empAgg.get('employerId'), new List<Decimal>{(Decimal)empAgg.get('maxSal'),(Decimal)empAgg.get('minSal')});                                                                                 
             }
 
             for(Id employerId : employerIds){
                 Employer__c employer = new Employer__c (Id = employerId, 
-                                                    Highest_Salary__c = employerToMaxSalaryMap.get(employerId),
-                                                    Least_Salary__c = employerToMinSalaryMap.get(employerId));
-                                                    
+                                                    Highest_Salary__c = employerToSalaryMap.get(employerId)[0],
+                                                    Least_Salary__c = employerToSalaryMap.get(employerId)[1]);
                 employersToBeUpdated.add(employer);                                                                       
             }
         }

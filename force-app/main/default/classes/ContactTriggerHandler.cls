@@ -14,7 +14,7 @@ public with sharing class ContactTriggerHandler extends TriggerHandler {
     }
 
     public override void beforeInsert() {
-        
+        ContactHelper.enforceSinglePrimaryContact(newContacts, oldContMap); //Challenge 14(i)
     }
 
     public override void afterinsert() {
@@ -24,11 +24,13 @@ public with sharing class ContactTriggerHandler extends TriggerHandler {
 
     public override void beforeUpdate() {
         ContactHelper.updateContactAddress(newContacts, oldContMap);//Challenge 8
+        ContactHelper.enforceSinglePrimaryContact(newContacts, oldContMap); //Challenge 14(i)
     }
 
     public override void afterUpdate() {
         ContactHelper.sumOfContactsAmount(newContacts, oldContMap);//Challenge 1
         ContactHelper.countOfActiveContacts(newContacts, oldContMap);//Challenge 6
+        ContactHelper.updatePrimaryContactOnOldAccount(newContacts, oldContMap); //Challenge 14(ii)
         
     }
 
@@ -39,10 +41,12 @@ public with sharing class ContactTriggerHandler extends TriggerHandler {
     public override void afterDelete() {
         ContactHelper.sumOfContactsAmount(oldContacts, oldContMap);//Challenge 1
         ContactHelper.countOfActiveContacts(oldContacts, oldContMap);//Challenge 6
+        ContactHelper.updatePrimaryContact(oldContacts); //Challenge 14(iii)
     }
 
     public override void afterUndelete() {
         ContactHelper.sumOfContactsAmount(newContacts, oldContMap);//Challenge 1
         ContactHelper.countOfActiveContacts(newContacts, oldContMap);//Challenge 6
+        ContactHelper.reevaluatePrimaryContact(newContacts); //Challenge 14(iv)
     }
 }
