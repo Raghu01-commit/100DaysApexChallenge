@@ -95,4 +95,30 @@ public with sharing class CaseHelper {
         }
 
     }
+
+    //Challenge 16
+    public static void updateCaseSLA(List<Case> casesList, Map<Id, Case> oldCasesMap){
+        //Get Business Hours for Customer Support Team
+        BusinessHours csTeamBH = [SELECT Id FROM BusinessHours WHERE Name = 'Customer Support Team'];
+
+        Integer slaHours = 0;
+
+        for(Case c : casesList){
+
+            if((oldCasesMap == null && c.Priority != null) || (oldCasesMap != null && c.Priority != null && c.Priority != oldCasesMap.get(c.Id).Priority)){
+                
+                if(c.Priority == 'High'){
+                    slaHours = 4;
+                }
+                else if (c.Priority == 'Medium'){
+                    slaHours = 8;
+                }
+                else {
+                    slaHours = 24;
+                }
+                c.SLA_Marked_Time__c = system.now();
+                c.SLA_Due_Date__c = BusinessHours.add(csTeamBH.Id, system.now() , (long)(slaHours * 60 * 60 * 1000));
+            }
+        }
+    }
 }

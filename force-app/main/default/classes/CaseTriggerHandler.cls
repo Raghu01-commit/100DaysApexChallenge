@@ -14,14 +14,17 @@ public with sharing class CaseTriggerHandler extends TriggerHandler {
     
     public override void beforeInsert() {
         CaseHelper.assignCasesToQueues(newCases, oldCaseMap); //Challenge 9
+        CaseHelper.updateCaseSLA(newCases, oldCaseMap); //Challenge 16
     } 
 
     public override void afterinsert() {
         CaseHelper.updateLatestCaseNumberOnAccount(newCases, oldCaseMap); //Challenge 11
+        
     }
 
     public override void beforeUpdate() {
         Casehelper.assignCasesToQueues(newCases, oldCaseMap); //Challenge 9
+        CaseHelper.updateCaseSLA(newCases, oldCaseMap); //Challenge 16
     }
     
     public override void afterUpdate() { 
