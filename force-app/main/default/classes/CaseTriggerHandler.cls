@@ -29,6 +29,7 @@ public with sharing class CaseTriggerHandler extends TriggerHandler {
     
     public override void afterUpdate() { 
         CaseHelper.updateLatestCaseNumberOnAccount(newCases, oldCaseMap); //Challenge 11
+        CaseHelper.updateCaseStatusOnAccount(newCases, oldCaseMap); //Challenge 18
     } 
 
     /* public override void beforeDelete() {

@@ -121,4 +121,54 @@ public with sharing class CaseHelper {
             }
         }
     }
+
+    //Challenge 18
+    public static void updateCaseStatusOnAccount(List<Case> casesList, Map<Id, Case> oldCasesMap){
+
+        List<Account> accountsToBeUpdated = new List<Account>();
+
+        Set<Id> accIds = new Set<Id>();
+
+        for(Case c : casesList){
+            system.debug('Entered into the for loop:::::');
+            if(c.Status == 'Closed' && oldCasesMap.containsKey(c.Id) && oldCasesMap.get(c.Id).Status != 'Closed' && c.AccountId != null){
+                accIds.add(c.AccountId);
+            }
+        }
+
+        system.debug('These AccIds are collected :::: '+accIds);
+
+        Map<Id, Integer> accIdToOpenCasesMap = new Map<Id, Integer>();
+
+        //the aggregate query doesn't add the row of the account that doesn't have any open cases related. So to handle the scenario when //all the cases are closed, then the amount should be 0.
+
+        for (Id accId : accIds) {
+            accIdToOpenCasesMap.put(accId, 0);  // Default to 0, assuming no open cases
+        }
+
+        //The reason why we are initializing zero here is we have to validate if the count is 0 or not. So for that to happen there should be a key-value pair in the map. Reference : ContactHelper.sumOfContactsAmount()
+
+        if(!accIds.isEmpty()){
+            for(AggregateResult agg : [SELECT Count(Id) openCasesCount, AccountId 
+                                        FROM Case 
+                                        WHERE Status != 'Closed' AND AccountId IN : accIds 
+                                        GROUP By AccountId]){
+
+                accIdToOpenCasesMap.put((Id) agg.get('AccountId'), (Integer) agg.get('openCasesCount'));
+            }
+        }
+
+        if(!accIdToOpenCasesMap.isEmpty()){
+            for(Id accId : accIds ){
+                if(accIdToOpenCasesMap.get(accId) == 0){
+                    accountsToBeUpdated.add(new Account(Id = accId, Case_Status__c = 'All cases resolved')); //Assuming that all Accounts have open cases, updating only this Status explicitly.
+                }
+                
+            }
+        }
+
+        if(!accountsToBeUpdated.isEmpty()){
+            update accountsToBeUpdated;
+        }
+    }
 }
