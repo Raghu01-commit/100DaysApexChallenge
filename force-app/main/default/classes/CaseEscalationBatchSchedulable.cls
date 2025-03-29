@@ -2,6 +2,7 @@
 public with sharing class CaseEscalationBatchSchedulable implements Schedulable {
     public void execute(SchedulableContext sc){
         CaseEscalationBatch cb = new CaseEscalationBatch();
+        Database.executeBatch(cb);
     }
 }
 
