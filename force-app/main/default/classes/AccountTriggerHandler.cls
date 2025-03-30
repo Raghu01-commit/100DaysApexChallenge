@@ -28,6 +28,7 @@ public with sharing class AccountTriggerHandler extends TriggerHandler {
         AccountHelper.sendNewTierAccountEmails(newAccounts, oldAccountMap);//Challenge 3
         AccountHelper.updateContactAddress(newAccountMap,oldAccountMap);//Challenge 8
         OpportunityHelper.updateOppStage(newAccounts, oldAccountMap); //Challenge 10
+        system.enqueueJob(new UpdateRelatedRecordsOnAccountInactive()); //Challenge 21
     }
 
     /* public override void beforeDelete() {
